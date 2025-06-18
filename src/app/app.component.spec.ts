@@ -17,7 +17,7 @@ describe('AppComponent', () => {
   it(`should have the 'sap-dashboard' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('sap-dashboard');
+    expect(app.title).toEqual('Customer Portal');
   });
 
   it('should render title', () => {

@@ -1,0 +1,115 @@
+<div class="dashboard-wrapper">
+  <!-- Main Dashboard Content -->
+  <div class="welcome-header">
+    <h1>Welcome to <span class="sap-highlight">SAP</span> Customer Portal</h1>
+    <p class="welcome-subtitle">Your business insights at a glance</p>
+  </div>
+
+  <div class="stats-overview">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">trending_up</span>
+      </div>
+      <div class="stat-content">
+        <h3>Sales Performance</h3>
+        <div class="stat-value">€124,500</div>
+        <div class="stat-change positive">
+          <span class="material-icons">arrow_upward</span>
+          <span>12.5% from last month</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">inventory</span>
+      </div>
+      <div class="stat-content">
+        <h3>Open Orders</h3>
+        <div class="stat-value">8</div>
+        <div class="stat-change neutral">
+          <span class="material-icons">remove</span>
+          <span>Same as last week</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">local_shipping</span>
+      </div>
+      <div class="stat-content">
+        <h3>Pending Deliveries</h3>
+        <div class="stat-value">3</div>
+        <div class="stat-change positive">
+          <span class="material-icons">arrow_downward</span>
+          <span>2 less than last week</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="action-cards">
+      <div class="action-card" [routerLink]="['inquiry']">
+        <span class="material-icons">search</span>
+        <h3>View Inquiries</h3>
+        <p>Check your recent product inquiries</p>
+      </div>
+      
+      <div class="action-card" [routerLink]="['sales-order']">
+        <span class="material-icons">receipt</span>
+        <h3>Sales Orders</h3>
+        <p>Review your current sales orders</p>
+      </div>
+      
+      <div class="action-card" [routerLink]="['../financial/invoice']">
+        <span class="material-icons">description</span>
+        <h3>Invoices</h3>
+        <p>Access your latest invoices</p>
+      </div>
+      
+      <div class="action-card" [routerLink]="['../financial/aging']">
+        <span class="material-icons">payments</span>
+        <h3>Payments</h3>
+        <p>Check payment status and history</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="recent-activity">
+    <div class="activity-header">
+      <h2>Recent Activity</h2>
+      <a [routerLink]="['activity']" class="view-all">View All</a>
+    </div>
+    
+    <div class="activity-timeline">
+      <div class="activity-item">
+        <div class="activity-icon delivered">
+          <span class="material-icons">check_circle</span>
+        </div>
+        <div class="activity-content">
+          <h4>Order #SAP-78542 Delivered</h4>
+          <p>Your order has been successfully delivered</p>
+          <span class="activity-time">Today, 10:23 AM</span>
+        </div>
+      </div>
+      
+      <div class="activity-item">
+        <div class="activity-icon processing">
+          <span class="material-icons">local_shipping</span>
+        </div>
+        <div class="activity-content">
+          <h4>Order #SAP-78546 Shipped</h4>
+          <p>Your order has been shipped and is on its way</p>
+          <span class="activity-time">Yesterday, 2:45 PM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="decorative-circle circle-1"></div>
+  <div class="decorative-circle circle-2"></div>
+  <div class="decorative-circle circle-3"></div>
+</div>

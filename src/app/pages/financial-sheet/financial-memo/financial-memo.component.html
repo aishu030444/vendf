@@ -1,0 +1,29 @@
+<div class="memo-container">
+  <div class="page-header">
+    <h1>Credit/Debit Memo</h1>
+    <p>View your credit and debit memo information</p>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="tab-buttons">
+      <button 
+        class="tab-button" 
+        [class.active]="view === 'credit'"
+        (click)="showCredit()">
+        <i class="bi bi-plus-circle"></i>
+        Credit Memos
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="view === 'debit'"
+        (click)="showDebit()">
+        <i class="bi bi-dash-circle"></i>
+        Debit Memos
+      </button>
+    </div>
+
+    <div class="memo-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

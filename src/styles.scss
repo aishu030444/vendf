@@ -1,1 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --text-primary: #212121;
+  --text-secondary: #616161;
+  --card-bg: #ffffff;
+  --primary: #1976d2;
+  --success: #4caf50;
+  --error: #f44336;
+  --border-color: #e0e0e0;
+}
+:root {
+  --sap-blue: #0057b8;
+  --sap-light-blue: #0078d4;
+  --sap-dark-blue: #003b7c;
+  --sap-accent-blue: #00a6fb;
+  /* ... */
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

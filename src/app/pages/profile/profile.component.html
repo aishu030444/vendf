@@ -1,0 +1,55 @@
+<div class="profile-container">
+  <h2 class="page-title">Vendor Profile</h2>
+
+  <div class="vendor-profile-wrapper">
+    <ng-container *ngIf="vendorProfile; else loadingOrError">
+      <div class="profile-card">
+        <div class="profile-header">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            alt="Profile"
+            class="avatar"
+          />
+
+          <div class="profile-summary">
+            <h3 class="name">{{ vendorProfile.name }}</h3>
+            <div class="meta-info">
+              <span>Vendor ID: {{ vendorProfile.vendorId }}</span>
+              <span *ngIf="vendorProfile.shortName" class="short-name">
+                {{ vendorProfile.shortName }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-sections">
+          <section class="section">
+            <h4>🏢 Company Info</h4>
+            <div class="info-row"><strong>Address:</strong> {{ fullAddress }}</div>
+            <div class="info-row"><strong>Region:</strong> {{ vendorProfile.address.region }}</div>
+          </section>
+
+          <section class="section">
+            <h4>📞 Contact Info</h4>
+            <div class="info-row"><strong>Phone:</strong> {{ vendorProfile.contact.phone }}</div>
+            <div *ngIf="vendorProfile.contact.email" class="info-row">
+              <strong>Email:</strong> {{ vendorProfile.contact.email }}
+            </div>
+          </section>
+
+          <section class="section" *ngIf="vendorProfile.metadata">
+            <h4>🔗 System Info</h4>
+            <div class="info-row"><strong>Type:</strong> {{ vendorProfile.metadata.type }}</div>
+            <div class="info-row"><strong>Source:</strong> SAP Vendor Master</div>
+          </section>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Loading/Error Template -->
+    <ng-template #loadingOrError>
+      <div *ngIf="isLoading" class="status-message">Loading vendor profile...</div>
+      <div *ngIf="error" class="error-message">{{ error }}</div>
+    </ng-template>
+  </div>
+</div>

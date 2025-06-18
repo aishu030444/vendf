@@ -1,0 +1,375 @@
+<!-- Material Icons Link -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- SAP Sidebar Component -->
+<nav class="sap-sidebar">
+  <!-- Header Section -->
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="sap-logo">
+        <div class="sap-logo-text">SAP</div>
+        <div class="sap-logo-subtitle">ERP</div>
+      </div>
+    </div>
+    <div class="subtitle">Customer Portal</div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <ul class="nav-menu">
+    <!-- Dashboard Section -->
+    <li class="nav-item" [class.active]="isDashboardActive()">
+      <div class="nav-link" (click)="toggleDashboard()">
+        <span class="material-icons">dashboard</span>
+        <span class="nav-text">Dashboard</span>
+        <span class="material-icons arrow-icon">
+          {{dashboardOpen ? 'expand_less' : 'expand_more'}}
+        </span>
+      </div>
+      <ul class="submenu" *ngIf="dashboardOpen">
+        <li>
+          <a routerLink="/home/dashboard/inquiry" routerLinkActive="active">
+            <span class="material-icons">search</span>
+            <span>Request for Quotation</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/home/dashboard/sales-order" routerLinkActive="active">
+            <span class="material-icons">receipt</span>
+            <span>Purchase Order</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/home/dashboard/delivery" routerLinkActive="active">
+            <span class="material-icons">local_shipping</span>
+            <span>List of Delivery</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Profile Section -->
+    <li class="nav-item">
+      <a class="nav-link profile-link" routerLink="/home/profile" routerLinkActive="active">
+        <span class="material-icons">person</span>
+        <span class="nav-text">Profile</span>
+      </a>
+    </li>
+
+    <!-- Financial Sheet Section -->
+    <li class="nav-item" [class.active]="isFinancialActive()">
+      <div class="nav-link" (click)="toggleFinancial()">
+        <span class="material-icons">account_balance</span>
+        <span class="nav-text">Financial Sheet</span>
+        <span class="material-icons arrow-icon">
+          {{financialOpen ? 'expand_less' : 'expand_more'}}
+        </span>
+      </div>
+      <ul class="submenu" *ngIf="financialOpen">
+        <li>
+          <a routerLink="/home/financial/invoice" routerLinkActive="active">
+            <span class="material-icons">description</span>
+            <span>Invoice Details</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/home/financial/aging" routerLinkActive="active">
+            <span class="material-icons">payments</span>
+            <span>Payments and Aging</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/home/financial/memo" routerLinkActive="active">
+            <span class="material-icons">receipt_long</span>
+            <span>Credit/Debit Memo</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/home/financial/overall" routerLinkActive="active">
+            <span class="material-icons">trending_up</span>
+            <span>Overall Sales Data</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  
+  <!-- Decorative Elements -->
+  <div class="decorative-circle circle-1"></div>
+  <div class="decorative-circle circle-2"></div>
+  <div class="decorative-circle circle-3"></div>
+</nav>
+
+<style>
+  /* SAP Fiori/UI5 Sidebar Theme */
+  :root {
+    --sap-blue: #0057b8;
+    --sap-light-blue: #0078d4;
+    --sap-dark-blue: #003b7c;
+    --sap-accent-blue: #00a6fb;
+    --sap-secondary: #5cbbff;
+    --sap-gray: #6a6d70;
+    --sap-light-gray: #f7f7f7;
+    --sap-border-gray: #d9d9d9;
+    --sap-sidebar-width: 280px;
+    --sap-sidebar-collapsed-width: 70px;
+    --sap-transition-speed: 0.3s;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .sap-sidebar {
+    width: 35vh;
+    height: 100vh;
+    background: linear-gradient(-45deg, var(--sap-blue), var(--sap-light-blue), var(--sap-dark-blue), var(--sap-accent-blue));
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    transition: width var(--sap-transition-speed);
+    font-family: '72', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Sidebar Header */
+  .sidebar-header {
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .sap-logo {
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .sap-logo-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -1px;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .sap-logo-subtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: -5px;
+    font-weight: 600;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+  }
+  
+  /* Navigation Menu */
+  .nav-menu {
+    list-style: none;
+    padding: 1rem 0;
+    margin: 0;
+  }
+  
+  .nav-item {
+    margin: 0.25rem 0;
+    position: relative;
+  }
+  
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+  }
+  
+  .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 3px solid rgba(255, 255, 255, 0.5);
+  }
+  
+  .nav-item.active > .nav-link {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-left: 3px solid white;
+  }
+  
+  .material-icons {
+    margin-right: 1rem;
+    font-size: 1.25rem;
+  }
+  
+  .arrow-icon {
+    margin-left: auto;
+    margin-right: 0;
+    transition: transform 0.2s;
+  }
+  
+  .nav-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  
+  /* Submenu */
+  .submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .submenu li {
+    margin: 0;
+  }
+  
+  .submenu a {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 1rem 0.6rem 3.5rem;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  
+  .submenu a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+  
+  .submenu a.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-left: 3px solid rgba(255, 255, 255, 0.7);
+  }
+  
+  .submenu .material-icons {
+    font-size: 1rem;
+    margin-right: 0.75rem;
+  }
+  
+  /* Profile Link Styling */
+  .profile-link {
+    border-radius: 4px;
+    margin: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+  }
+  
+  .profile-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-left: 3px solid white;
+  }
+  
+  .profile-link.active {
+    background: rgba(255, 255, 255, 0.25);
+    border-left: 3px solid white;
+  }
+  
+  /* Decorative elements */
+  .decorative-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: -1;
+  }
+  
+  .circle-1 {
+    width: 120px;
+    height: 120px;
+    top: 20px;
+    right: -60px;
+    animation: float 7s ease-in-out infinite;
+  }
+  
+  .circle-2 {
+    width: 80px;
+    height: 80px;
+    bottom: 30%;
+    left: -40px;
+    animation: float 5s ease-in-out infinite reverse;
+  }
+  
+  .circle-3 {
+    width: 60px;
+    height: 60px;
+    bottom: 10%;
+    right: -30px;
+    animation: float 4s ease-in-out infinite 1s;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .sap-sidebar {
+      width: var(--sap-sidebar-collapsed-width);
+    }
+    
+    .sap-sidebar:hover {
+      width: var(--sap-sidebar-width);
+    }
+    
+    .nav-text, .arrow-icon, .submenu, .subtitle {
+      display: none;
+    }
+    
+    .sap-sidebar:hover .nav-text,
+    .sap-sidebar:hover .arrow-icon,
+    .sap-sidebar:hover .submenu,
+    .sap-sidebar:hover .subtitle {
+      display: block;
+    }
+    
+    .sap-sidebar:hover .submenu {
+      display: block;
+    }
+    
+    .sap-logo-text {
+      font-size: 1.8rem;
+    }
+    
+    .sap-logo-subtitle {
+      font-size: 0.7rem;
+    }
+  }
+</style>

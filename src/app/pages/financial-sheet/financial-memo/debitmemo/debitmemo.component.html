@@ -1,0 +1,108 @@
+<div class="dashboard-container">
+  <div class="header">
+    <h2>Debit Memos</h2>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-indicator">
+    <mat-spinner diameter="50"></mat-spinner>
+    <span>Loading debit memos...</span>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error && !isLoading" class="error-message">
+    <mat-icon color="warn">error</mat-icon>
+    {{error}}
+  </div>
+
+  <!-- Data Table -->
+  <div *ngIf="!isLoading && !error" class="table-container">
+    <mat-table [dataSource]="creditRecords" matSort>
+      
+      <!-- Column Definitions -->
+      <ng-container matColumnDef="gjahr">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fiscal Year</th>
+        <td mat-cell *matCellDef="let record">{{record.gjahr}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="bukrs">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Company Code</th>
+        <td mat-cell *matCellDef="let record">{{record.bukrs}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="blart">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Document Type</th>
+        <td mat-cell *matCellDef="let record">{{record.blart}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="waers">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
+        <td mat-cell *matCellDef="let record">{{record.waers}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="bldat">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Document Date</th>
+        <td mat-cell *matCellDef="let record">{{record.bldat | date}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="budat">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Posting Date</th>
+        <td mat-cell *matCellDef="let record">{{record.budat | date}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="lifnr">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Vendor ID</th>
+        <td mat-cell *matCellDef="let record">{{record.lifnr}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name1">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Vendor Name</th>
+        <td mat-cell *matCellDef="let record">{{record.name1}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="buzei">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Item Number</th>
+        <td mat-cell *matCellDef="let record">{{record.buzei}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="shkzg">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Debit/Credit</th>
+        <td mat-cell *matCellDef="let record">{{record.shkzg}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="hkont">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>GL Account</th>
+        <td mat-cell *matCellDef="let record">{{record.hkont}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="sgtxt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Text</th>
+        <td mat-cell *matCellDef="let record">{{record.sgtxt}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="kostl">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Cost Center</th>
+        <td mat-cell *matCellDef="let record">{{record.kostl}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="augdt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Clearing Date</th>
+        <td mat-cell *matCellDef="let record">{{record.augdt | date}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="augbl">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Clearing Doc</th>
+        <td mat-cell *matCellDef="let record">{{record.augbl}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </mat-table>
+
+    <!-- Empty State -->
+    <div *ngIf="creditRecords.length === 0 && !isLoading" class="empty-state">
+      <mat-icon>info</mat-icon>
+      <p>No debit memos found for this vendor</p>
+    </div>
+  </div>
+</div>

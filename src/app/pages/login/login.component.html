@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAP ERP Login</title>
+  <style>
+    /* SAP Fiori/UI5 inspired theme with creative elements */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes borderGlow {
+      0% { box-shadow: 0 0 5px rgba(0, 112, 242, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(0, 112, 242, 0.8); }
+      100% { box-shadow: 0 0 5px rgba(0, 112, 242, 0.5); }
+    }
+    
+    body {
+      font-family: '72', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    .login-container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(-45deg, #0057b8, #0078d4, #0063b1, #00a6fb);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+    
+    .login-card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2.5rem;
+      width: 400px;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      position: relative;
+      animation: fadeIn 0.8s ease-out forwards;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .logo-container {
+      margin-bottom: 1.5rem;
+      position: relative;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .sap-logo {
+      position: relative;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .sap-logo-text {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #0057b8;
+      letter-spacing: -1px;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sap-logo-subtitle {
+      font-size: 1rem;
+      color: #0078d4;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: -5px;
+    }
+    
+    .login-header h2 {
+      font-size: 1.5rem;
+      color: #0057b8;
+      margin: 0 0 1.5rem 0;
+      font-weight: 500;
+      animation: fadeIn 0.8s ease-out 0.4s both;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .login-header h2::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(to right, #0057b8, #00a6fb);
+      border-radius: 3px;
+    }
+    
+    .form-group {
+      text-align: left;
+      margin-bottom: 1.5rem;
+      animation: fadeIn 0.8s ease-out 0.6s both;
+      position: relative;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #2b4c7e;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all 0.3s;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid #b3d1ff;
+      border-radius: 8px;
+      transition: all 0.3s;
+      font-size: 0.875rem;
+      box-sizing: border-box;
+      background-color: rgba(250, 252, 255, 0.8);
+    }
+    
+    .form-control:focus {
+      border-color: #0070f2;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 112, 242, 0.25);
+      background-color: #ffffff;
+      transform: translateY(-2px);
+    }
+    
+    .input-icon {
+      position: absolute;
+      right: 12px;
+      top: 38px;
+      color: #0070f2;
+      opacity: 0.7;
+    }
+    
+    .btn {
+      padding: 0.875rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(45deg, #0078d4, #0063b1);
+      color: white;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0, 99, 177, 0.3);
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.8s ease-out 0.8s both;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(45deg, #0063b1, #004e8c);
+      box-shadow: 0 6px 16px rgba(0, 99, 177, 0.4);
+      transform: translateY(-2px);
+      animation: pulse 1.5s infinite;
+    }
+    
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(0, 99, 177, 0.3);
+    }
+    
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+    
+    .btn-primary:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      20% {
+        transform: scale(25, 25);
+        opacity: 0.3;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(40, 40);
+      }
+    }
+    
+    .btn:disabled {
+      background: linear-gradient(45deg, #a5c7e9, #8ab5e0);
+      color: #ffffff;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+    
+    .alert-error {
+      background-color: #ffeaea;
+      color: #bb0000;
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+      border-left: 4px solid #bb0000;
+      text-align: left;
+      animation: fadeIn 0.5s ease-out forwards;
+      box-shadow: 0 2px 8px rgba(187, 0, 0, 0.1);
+    }
+    
+    .login-footer {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: #6a6d70;
+      border-top: 1px solid rgba(0, 87, 184, 0.1);
+      padding-top: 1rem;
+      animation: fadeIn 0.8s ease-out 1s both;
+    }
+    
+    /* Floating label effect */
+    .floating-label {
+      position: relative;
+    }
+    
+    .floating-label input {
+      height: 56px;
+      padding: 14px 16px;
+    }
+    
+    .floating-label label {
+      position: absolute;
+      top: 17px;
+      left: 12px;
+      padding: 0 5px;
+      background: transparent;
+      transition: 0.2s ease all;
+      pointer-events: none;
+      color: #6a6d70;
+    }
+    
+    .floating-label input:focus ~ label,
+    .floating-label input:not(:placeholder-shown) ~ label {
+      top: -10px;
+      left: 10px;
+      font-size: 12px;
+      color: #0070f2;
+      background: white;
+      padding: 0 5px;
+    }
+    
+    /* Decorative elements */
+    .decorative-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(45deg, rgba(0, 166, 251, 0.2), rgba(0, 87, 184, 0.2));
+      z-index: -1;
+    }
+    
+    .circle-1 {
+      width: 100px;
+      height: 100px;
+      top: -30px;
+      right: -30px;
+      animation: float 7s ease-in-out infinite;
+    }
+    
+    .circle-2 {
+      width: 60px;
+      height: 60px;
+      bottom: 20px;
+      left: -20px;
+      animation: float 5s ease-in-out infinite reverse;
+    }
+    
+    /* Glow effect on focus */
+    .form-control:focus {
+      animation: borderGlow 1.5s infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="decorative-circle circle-1"></div>
+      <div class="decorative-circle circle-2"></div>
+      
+      <div class="logo-container">
+        <div class="sap-logo">
+          <div class="sap-logo-text">SAP</div>
+          <div class="sap-logo-subtitle">ERP</div>
+        </div>
+      </div>
+      
+      <div class="login-header">
+        <h2>Customer Portal</h2>
+      </div>
+      
+      <div *ngIf="errorMessage" class="alert alert-error">
+        {{ errorMessage }}
+      </div>
+      
+      <form (ngSubmit)="login()" #loginForm="ngForm">
+        <div class="form-group floating-label">
+          <input 
+            type="text" 
+            id="customerId" 
+            name="customerId" 
+            [(ngModel)]="vendorId" 
+            class="form-control" 
+            placeholder=" " 
+            required>
+          <label for="customerId">Vendor ID</label>
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        
+        <div class="form-group floating-label">
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            [(ngModel)]="password" 
+            class="form-control" 
+            placeholder=" " 
+            required>
+          <label for="password">Password</label>
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="!loginForm.form.valid">
+            Login
+          </button>
+        </div>
+      </form>
+      
+      <div class="login-footer">
+        <!-- Footer content -->
+      </div>
+    </div>
+  </div>
+</body>
+</html>

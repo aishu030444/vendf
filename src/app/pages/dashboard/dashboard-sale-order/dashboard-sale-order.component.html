@@ -1,0 +1,275 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="header">
+    <h2>Purchase Order Dashboard</h2>
+    <button mat-raised-button color="primary" (click)="clearFilters()"
+            [disabled]="!searchText && !dateRangeFilter.start && !dateRangeFilter.end && !orderTypeFilter">
+      Clear Filters
+    </button>
+  </div>
+
+  <!-- Error message -->
+  <mat-error *ngIf="error" class="error-message">{{ error }}</mat-error>
+
+  <!-- Filters -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="searchText" (input)="applyFilters()"
+             placeholder="Search by PO #, Material or Vendor">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <div class="row-filters">
+      <!-- Order Type Filter -->
+      <mat-form-field appearance="outline" class="type-field">
+        <mat-label>Order Type</mat-label>
+        <mat-select [(ngModel)]="orderTypeFilter" (selectionChange)="applyFilters()">
+          <mat-option value="">All Types</mat-option>
+          <mat-option *ngFor="let type of orderTypes" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- PO Date Range -->
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>Created Date Range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate [(ngModel)]="dateRangeFilter.start"
+                 (dateChange)="applyFilters()" placeholder="Start date">
+          <input matEndDate [(ngModel)]="dateRangeFilter.end"
+                 (dateChange)="applyFilters()" placeholder="End date">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <mat-spinner *ngIf="isLoading" diameter="50" class="spinner"></mat-spinner>
+
+  <!-- Purchase Order Table -->
+  <div class="table-container mat-elevation-z8" *ngIf="!isLoading">
+    <table mat-table [dataSource]="pagedPurchaseOrders" matSort (matSortChange)="sortData($event)">
+
+      <!-- Purchase Order Number -->
+      <ng-container matColumnDef="purchaseOrderNo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>PO Number</th>
+        <td mat-cell *matCellDef="let element">{{ element.purchaseOrderNo }}</td>
+      </ng-container>
+      <ng-container matColumnDef="purchOrg">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header>Purch Org</th>
+  <td mat-cell *matCellDef="let element">{{ element.purchOrg }}</td>
+</ng-container>
+
+      <!-- Order Type -->
+      <ng-container matColumnDef="orderType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+        <td mat-cell *matCellDef="let element">{{ element.orderType }}</td>
+      </ng-container>
+
+      <!-- Created Date -->
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Created Date</th>
+        <td mat-cell *matCellDef="let element">{{ formatDate(element.createdDate) }}</td>
+      </ng-container>
+
+      <!-- Vendor -->
+      <ng-container matColumnDef="vendor">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Vendor</th>
+        <td mat-cell *matCellDef="let element">{{ element.vendor }}</td>
+      </ng-container>
+
+      <!-- Company Code -->
+      <ng-container matColumnDef="companyCode">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Company</th>
+        <td mat-cell *matCellDef="let element">{{ element.companyCode }}</td>
+      </ng-container>
+
+      <!-- Material -->
+      <ng-container matColumnDef="material">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Material</th>
+        <td mat-cell *matCellDef="let element">{{ element.material }}</td>
+      </ng-container>
+
+      <!-- Quantity -->
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantity</th>
+        <td mat-cell *matCellDef="let element">{{ element.quantity | number }}</td>
+      </ng-container>
+
+      <!-- Net Price -->
+      <ng-container matColumnDef="netPrice">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Unit Price</th>
+        <td mat-cell *matCellDef="let element">{{ formatCurrency(element.netPrice, element.currency) }}</td>
+      </ng-container>
+
+      <!-- Total Value -->
+      <ng-container matColumnDef="totalValue">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Value</th>
+        <td mat-cell *matCellDef="let element">{{ formatCurrency(element.totalValue, element.currency) }}</td>
+      </ng-container>
+      <ng-container matColumnDef="purchGroup">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header>Purch Group</th>
+  <td mat-cell *matCellDef="let element">{{ element.purchGroup }}</td>
+</ng-container>
+
+<!-- Currency -->
+<ng-container matColumnDef="currency">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
+  <td mat-cell *matCellDef="let element">{{ element.currency }}</td>
+</ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="viewDetails(element.purchaseOrderNo)" 
+                  matTooltip="View details" color="primary">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button (click)="downloadDocument(element.purchaseOrderNo)" 
+                  matTooltip="Download PO" color="accent"
+                  [disabled]="element.totalValue === 0">
+            <mat-icon>download</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+          [class.highlight-row]="hoveredRow === row.purchaseOrderNo"
+          (mouseenter)="hoveredRow = row.purchaseOrderNo"
+          (mouseleave)="hoveredRow = null"></tr>
+    </table>
+
+    <!-- No Data -->
+    <div *ngIf="filteredPurchaseOrders.length === 0" class="no-data">
+      <mat-icon>info</mat-icon>
+      <p>No purchase orders found matching your criteria.</p>
+      <button mat-button color="primary" (click)="clearFilters()"
+              *ngIf="searchText || dateRangeFilter.start || dateRangeFilter.end || orderTypeFilter">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <mat-paginator *ngIf="filteredPurchaseOrders.length > 0" [length]="filteredPurchaseOrders.length"
+                 [pageSize]="pageSize" [pageIndex]="pageIndex"
+                 [pageSizeOptions]="[5, 10, 25, 100]"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
+
+<!-- Purchase Order Details Panel 
+<mat-accordion *ngIf="selectedOrder" class="details-panel">
+  <mat-expansion-panel [(expanded)]="panelOpenState">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Purchase Order Details: {{ selectedOrder.purchaseOrderNo }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="details-content">
+      <div class="details-row">
+        <div class="detail-item">
+          <span class="detail-label">Created Date:</span>
+          <span class="detail-value">{{ formatDate(selectedOrder.createdDate) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Created By:</span>
+          <span class="detail-value">{{ selectedOrder.createdBy }}</span>
+        </div>
+      </div>
+
+      <div class="details-row">
+        <div class="detail-item">
+          <span class="detail-label">Vendor:</span>
+          <span class="detail-value">{{ selectedOrder.vendor }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Company Code:</span>
+          <span class="detail-value">{{ selectedOrder.companyCode }}</span>
+        </div>
+      </div>
+
+      <div class="details-row">
+        <div class="detail-item">
+          <span class="detail-label">Purchasing Org:</span>
+          <span class="detail-value">{{ selectedOrder.purchOrg }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Purchasing Group:</span>
+          <span class="detail-value">{{ selectedOrder.purchGroup }}</span>
+        </div>
+      </div>
+
+      <div class="details-row">
+        <div class="detail-item">
+          <span class="detail-label">Material:</span>
+          <span class="detail-value">{{ selectedOrder.material }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Item Number:</span>
+          <span class="detail-value">{{ selectedOrder.itemNo }}</span>
+        </div>
+      </div>
+
+      <div class="details-row">
+        <div class="detail-item">
+          <span class="detail-label">Quantity:</span>
+          <span class="detail-value">{{ selectedOrder.quantity | number }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Unit Price:</span>
+          <span class="detail-value">{{ formatCurrency(selectedOrder.netPrice, selectedOrder.currency) }}</span>
+        </div>
+      </div>
+
+      <div class="details-row">
+        <div class="detail-item">
+          <span class="detail-label">Total Value:</span>
+          <span class="detail-value highlight">{{ formatCurrency(selectedOrder.totalValue, selectedOrder.currency) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Currency:</span>
+          <span class="detail-value">{{ selectedOrder.currency }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="downloadDocument(selectedOrder.purchaseOrderNo)">
+        <mat-icon>download</mat-icon> Download PO
+      </button>
+      <button mat-raised-button color="warn" (click)="panelOpenState = false">
+        Close
+      </button>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>-->
+<div *ngIf="selectedOrder" class="overlay">
+  <div class="order-popup mat-elevation-z8">
+    <h3>Purchase Order Details ({{ selectedOrder.purchaseOrderNo }})</h3>
+
+    <p><strong>Created Date:</strong> {{ formatDate(selectedOrder.createdDate) }}</p>
+    <p><strong>Created By:</strong> {{ selectedOrder.createdBy }}</p>
+    <p><strong>Vendor:</strong> {{ selectedOrder.vendor }}</p>
+    <p><strong>Company Code:</strong> {{ selectedOrder.companyCode }}</p>
+    <p><strong>Purch Org:</strong> {{ selectedOrder.purchOrg }}</p>
+    <p><strong>Purch Group:</strong> {{ selectedOrder.purchGroup }}</p>
+    <p><strong>Material:</strong> {{ selectedOrder.material }}</p>
+    <p><strong>Item Number:</strong> {{ selectedOrder.itemNo }}</p>
+    <p><strong>Quantity:</strong> {{ selectedOrder.quantity | number }}</p>
+    <p><strong>Unit Price:</strong> {{ formatCurrency(selectedOrder.netPrice, selectedOrder.currency) }}</p>
+    <p><strong>Total Value:</strong> {{ formatCurrency(selectedOrder.totalValue, selectedOrder.currency) }}</p>
+    <p><strong>Currency:</strong> {{ selectedOrder.currency }}</p>
+
+    <button mat-raised-button color="warn" (click)="selectedOrder = null">Close</button>
+  </div>
+</div>
+
+

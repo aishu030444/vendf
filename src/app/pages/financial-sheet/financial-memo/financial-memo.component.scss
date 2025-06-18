@@ -1,0 +1,107 @@
+.memo-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .page-header {
+    margin-bottom: 30px;
+    text-align: center;
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #7f8c8d;
+      font-size: 1rem;
+    }
+  }
+
+  .content-wrapper {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .tab-buttons {
+    display: flex;
+    border-bottom: 1px solid #ecf0f1;
+    background: #f8f9fa;
+
+    .tab-button {
+      flex: 1;
+      padding: 15px 20px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #7f8c8d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.3s ease;
+
+      .icon {
+        margin-right: 8px;
+        font-size: 1.2rem;
+      }
+
+      .badge {
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #3498db;
+      }
+
+      &:hover {
+        color: #3498db;
+        background: rgba(52, 152, 219, 0.1);
+      }
+
+      &.active {
+        color: #3498db;
+        font-weight: 600;
+
+        .icon {
+          color: #3498db;
+        }
+      }
+    }
+  }
+
+  .memo-content {
+    padding: 20px;
+    min-height: 400px;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .memo-container {
+    padding: 10px;
+
+    .tab-buttons {
+      .tab-button {
+        padding: 12px 10px;
+        font-size: 0.9rem;
+
+        .icon {
+          margin-right: 5px;
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .memo-content {
+      padding: 15px;
+    }
+  }
+}
