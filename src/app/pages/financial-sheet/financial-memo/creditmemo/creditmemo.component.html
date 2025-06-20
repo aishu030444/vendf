@@ -1,6 +1,49 @@
-<div class="dashboard-container">
+<div class="debitcontainer">
   <div class="header">
-    <h2>Debit Memos</h2>
+    <h2>Credit Memos</h2>
+    <button mat-raised-button color="primary" (click)="clearFilters()">
+      <mat-icon>refresh</mat-icon> Reset Filters
+    </button>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="searchText" (input)="applyFilters()" 
+             placeholder="Search by vendor, document or GL account">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Document Type</mat-label>
+      <mat-select [(ngModel)]="docTypeFilter" (selectionChange)="applyFilters()">
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let type of docTypes" [value]="type">
+          {{type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Company Code</mat-label>
+      <mat-select [(ngModel)]="companyCodeFilter" (selectionChange)="applyFilters()">
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let code of companyCodes" [value]="code">
+          {{code}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Currency</mat-label>
+      <mat-select [(ngModel)]="currencyFilter" (selectionChange)="applyFilters()">
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let currency of currencies" [value]="currency">
+          {{currency}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
   <!-- Loading Indicator -->
@@ -17,27 +60,17 @@
 
   <!-- Data Table -->
   <div *ngIf="!isLoading && !error" class="table-container">
-    <mat-table [dataSource]="creditRecords" matSort>
+    <table mat-table [dataSource]="paginatedRecords" matSort (matSortChange)="sortData($event)" class="custom-table-header">
       
       <!-- Column Definitions -->
-      <ng-container matColumnDef="gjahr">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fiscal Year</th>
-        <td mat-cell *matCellDef="let record">{{record.gjahr}}</td>
-      </ng-container>
-
       <ng-container matColumnDef="bukrs">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Company Code</th>
         <td mat-cell *matCellDef="let record">{{record.bukrs}}</td>
       </ng-container>
 
       <ng-container matColumnDef="blart">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Document Type</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Doc Type</th>
         <td mat-cell *matCellDef="let record">{{record.blart}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="waers">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
-        <td mat-cell *matCellDef="let record">{{record.waers}}</td>
       </ng-container>
 
       <ng-container matColumnDef="bldat">
@@ -60,14 +93,9 @@
         <td mat-cell *matCellDef="let record">{{record.name1}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="buzei">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Item Number</th>
-        <td mat-cell *matCellDef="let record">{{record.buzei}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="shkzg">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Debit/Credit</th>
-        <td mat-cell *matCellDef="let record">{{record.shkzg}}</td>
+      <ng-container matColumnDef="waers">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
+        <td mat-cell *matCellDef="let record">{{record.waers}}</td>
       </ng-container>
 
       <ng-container matColumnDef="hkont">
@@ -75,34 +103,98 @@
         <td mat-cell *matCellDef="let record">{{record.hkont}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="sgtxt">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Text</th>
-        <td mat-cell *matCellDef="let record">{{record.sgtxt}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="kostl">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Cost Center</th>
-        <td mat-cell *matCellDef="let record">{{record.kostl}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="augdt">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Clearing Date</th>
-        <td mat-cell *matCellDef="let record">{{record.augdt | date}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="augbl">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Clearing Doc</th>
-        <td mat-cell *matCellDef="let record">{{record.augbl}}</td>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let record">
+          <button mat-icon-button (click)="showDetails(record)" 
+                  matTooltip="View details" color="primary">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </mat-table>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+      <mat-form-field>
+        <mat-label>Items per page</mat-label>
+        <mat-select [(value)]="itemsPerPage" (selectionChange)="onItemsPerPageChange()">
+          <mat-option value="5">5</mat-option>
+          <mat-option value="10">10</mat-option>
+          <mat-option value="20">20</mat-option>
+          <mat-option value="50">50</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <span>{{ getDisplayRange() }}</span>
+
+      <button mat-button (click)="goToPage(1)" [disabled]="currentPage === 1">First</button>
+      <button mat-button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button mat-button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+      <button mat-button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">Last</button>
+    </div>
 
     <!-- Empty State -->
-    <div *ngIf="creditRecords.length === 0 && !isLoading" class="empty-state">
+    <div *ngIf="filteredRecords.length === 0" class="empty-state">
       <mat-icon>info</mat-icon>
-      <p>No debit memos found for this vendor</p>
+      <p>No debit memos found matching your criteria</p>
+    </div>
+  </div>
+
+  <!-- Details Popup -->
+  <div *ngIf="selectedRecord" class="overlay">
+    <div class="debit-details-popup mat-elevation-z8">
+      <h3>Debit Memo Details</h3>
+      <div class="details-grid">
+        <div class="detail-item">
+          <span class="detail-label">Vendor:</span>
+          <span class="detail-value">{{ selectedRecord.name1 }} ({{ selectedRecord.lifnr }})</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Document Type:</span>
+          <span class="detail-value">{{ selectedRecord.blart }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Document Date:</span>
+          <span class="detail-value">{{ selectedRecord.bldat | date }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Posting Date:</span>
+          <span class="detail-value">{{ selectedRecord.budat | date }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Company Code:</span>
+          <span class="detail-value">{{ selectedRecord.bukrs }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Fiscal Year:</span>
+          <span class="detail-value">{{ selectedRecord.gjahr }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">GL Account:</span>
+          <span class="detail-value">{{ selectedRecord.hkont }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Cost Center:</span>
+          <span class="detail-value">{{ selectedRecord.kostl }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Clearing Doc:</span>
+          <span class="detail-value">{{ selectedRecord.augbl || 'Not cleared' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Clearing Date:</span>
+          <span class="detail-value">{{ selectedRecord.augdt ? (selectedRecord.augdt | date) : 'Not cleared' }}</span>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button mat-raised-button color="warn" (click)="closeDetails()">Close</button>
+      </div>
     </div>
   </div>
 </div>

@@ -69,7 +69,7 @@ export class FinancialInvoiceComponent implements OnInit, OnDestroy {
     'Name1': 'Vendor Name',
     'actions': 'Download'
   };
-
+ hoveredRow: string | null = null;
   INVOICES: Invoice[] = [];
   filteredInvoices: Invoice[] = [];
   isLoading = false;
@@ -236,6 +236,11 @@ export class FinancialInvoiceComponent implements OnInit, OnDestroy {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }, 100);
+  }
+clearFilters(): void {
+    this.searchText = '';
+    this.pageIndex = 0;
+    this.applyFilter();
   }
 
   applyFilter(): void {

@@ -50,6 +50,10 @@ export class DashboardDeliveryComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['Mblnr', 'Mjahr', 'Usnam', 'Ebeln', 'Ebelp', 'Matnr', 'Werks', 'Lgort', 'actions'];
 
+filter = {
+  mblnr: '',
+  ebeln: ''
+};
 
   INVOICES: Invoice[] = [];
   filteredInvoices: Invoice[] = [];
@@ -193,19 +197,31 @@ export class DashboardDeliveryComponent implements OnInit, OnDestroy {
   }
 
   applyFilter(): void {
-    if (!this.searchText) {
-      this.filteredInvoices = [...this.INVOICES];
-    } else {
-      const searchTextLower = this.searchText.toLowerCase();
-      this.filteredInvoices = this.INVOICES.filter(invoice =>
-        Object.values(invoice).some(
-          val => val && val.toString().toLowerCase().includes(searchTextLower)
-        )
-      );
-    }
-    this.totalItems = this.filteredInvoices.length;
-    this.pageIndex = 0;
-  }
+  const searchTextLower = this.searchText.toLowerCase();
+
+  this.filteredInvoices = this.INVOICES.filter(invoice => {
+    const matchesSearchText = !this.searchText || Object.values(invoice).some(
+      val => val && val.toString().toLowerCase().includes(searchTextLower)
+    );
+
+    const matchesMblnr = !this.filter.mblnr || invoice.Mblnr?.toLowerCase().includes(this.filter.mblnr.toLowerCase());
+    const matchesEbeln = !this.filter.ebeln || invoice.Ebeln?.toLowerCase().includes(this.filter.ebeln.toLowerCase());
+
+    return matchesSearchText && matchesMblnr && matchesEbeln;
+  });
+
+  this.totalItems = this.filteredInvoices.length;
+  this.pageIndex = 0;
+}
+clearFilter(): void {
+  this.searchText = '';
+  this.filter = {
+    mblnr: '',
+    ebeln: ''
+  };
+  this.applyFilter();
+}
+
 
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;

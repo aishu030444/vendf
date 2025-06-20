@@ -8,6 +8,16 @@
   gap: 0px;
   margin-top: 0
 }
+.field-filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  .filter-field {
+    flex: 1 1 200px;
+  }
+}
 
 .header {
   display: flex;

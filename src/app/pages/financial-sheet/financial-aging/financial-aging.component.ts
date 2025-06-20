@@ -97,6 +97,25 @@ export class FinancialAgingComponent implements OnInit {
       }
     }
   }
+   hoveredRow: string | null = null;
+  selectedInvoice: Aging | null = null;
+  
+
+/**
+ * Shows details of a specific invoice in a modal/dialog view
+ * @param invoice The invoice/aging record to display
+ */
+viewDetails(invoice: Aging): void {
+  this.selectedInvoice = invoice;
+}
+
+/**
+ * Closes the invoice details view
+ */
+closeDetails(): void {
+  this.selectedInvoice = null;
+}
+
 
   loadAgingData(vendorId: string): void {
     this.isLoading = true;
@@ -189,12 +208,7 @@ export class FinancialAgingComponent implements OnInit {
     });
   }
 
-  viewDetails(lifnr: string): void {
-    const aging = this.agings.find(a => a.Lifnr === lifnr);
-    this.router.navigate(['/home/dashboard/aging', lifnr], {
-      state: { agingData: aging }
-    });
-  }
+  
 
   formatDate(date: string): string {
     try {
