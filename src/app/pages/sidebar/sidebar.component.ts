@@ -7,25 +7,39 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  imports: [CommonModule,RouterModule]
+  imports: [CommonModule, RouterModule]
 })
 export class SidebarComponent {
   dashboardOpen = false;
   financialOpen = false;
+  isCollapsed = false;
 
   constructor(private router: Router) {}
 
-  toggleDashboard() {
-    this.dashboardOpen = !this.dashboardOpen;
-    if (this.dashboardOpen) {
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+    // Close submenus when collapsing
+    if (this.isCollapsed) {
+      this.dashboardOpen = false;
       this.financialOpen = false;
     }
   }
 
+  toggleDashboard() {
+    if (!this.isCollapsed) {
+      this.dashboardOpen = !this.dashboardOpen;
+      if (this.dashboardOpen) {
+        this.financialOpen = false;
+      }
+    }
+  }
+
   toggleFinancial() {
-    this.financialOpen = !this.financialOpen;
-    if (this.financialOpen) {
-      this.dashboardOpen = false;
+    if (!this.isCollapsed) {
+      this.financialOpen = !this.financialOpen;
+      if (this.financialOpen) {
+        this.dashboardOpen = false;
+      }
     }
   }
 
@@ -42,7 +56,8 @@ export class SidebarComponent {
   }
 
   logout() {
-    // Implement logout logic here
+    // Clear localStorage and navigate to login
+    localStorage.removeItem('vendorId');
     this.router.navigate(['/login']);
   }
 }
